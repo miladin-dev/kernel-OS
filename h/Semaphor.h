@@ -15,10 +15,6 @@ public:
 
 	int val() const;
 
-
-	/////IZBRISATI///
-	void ispis();
-
 private:
 	KernelSem* myImpl;
 };
