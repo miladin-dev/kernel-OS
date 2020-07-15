@@ -55,7 +55,4 @@ int Semaphore::val() const {
 	return myImpl->val();
 }
 
-void Semaphore::ispis(){
-	myImpl->ispis();
-}
 
