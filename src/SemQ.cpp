@@ -1,4 +1,4 @@
-#include "System.h" //Zbog System::putPCB;
+#include "System.h" 
 #include "stdio.h"
 #include "KernelEv.h"
 #include "SCHEDULE.h"
@@ -28,18 +28,15 @@ SemQueue::~SemQueue(){
 void SemQueue::pushB(KernelSem* ksem){
 	back = (front ? back->next : front) = new semElem(ksem);
 	++elemNum;
-	//syncPrintf("broj el u sem q %d", elemNum);
 }
 
 
 void SemQueue::timerUpdate(){
-	//printf("timerupdejts~~~~~~~~~~~~~~~~~~````");
-	if(front == 0) return;			// Ako nema nijedan semafor
+	if(front == 0) return;	
 
 	semElem* tmp = front;
 
 	for(int i=0; i < elemNum; i++){
-		//printf("Semafor %d\n", elemNum);
 		int val = tmp->ksem->sleepq->timerSleep();
 		tmp->ksem->updateValue(val);
 
@@ -56,9 +53,7 @@ void SemQueue::deleteNode(KernelSem* ksem){
 	if(front == 0) return;
 	semElem* tmp = front;
 	semElem* prev = 0;
-
-
-	//syncPrintf("=======deleteNode======");
+	
 	if(tmp == 0) return;
 
 	while(tmp != 0 && tmp->ksem != ksem){
@@ -81,13 +76,13 @@ void SemQueue::deleteNode(KernelSem* ksem){
 }
 
 void SemQueue::removeFromSemaphor(PCB* mPCB){
-	if(front == 0) return;			// Ako nema nijedan semafor
+	if(front == 0) return;			
 
 		semElem* tmp = front;
 
 		for(int i=0; i < elemNum; i++){
 			int val = tmp->ksem->sleepq->removePCB(mPCB);
-			tmp->ksem->updateValue(val);			// moze se vratiti ili broj Odblokiranih = 0 ili 1. Samo data nit moze biti jednom na semaforu.
+			tmp->ksem->updateValue(val);	
 			tmp = tmp->next;
 		}
 
@@ -101,22 +96,21 @@ void SemQueue::removeFromSemaphor(PCB* mPCB){
 void SemQueue::addKEvent(KernelEv* kev){
 	back = (front ? back->next : front) = new semElem(kev);
 	++elemNum;
-	//syncPrintf("broj el u sem q %d", elemNum);
 }
 
 void SemQueue::removeFromEvent(PCB* mPCB){
 	if(front == 0) return;
-/*
+
 	semElem* tmp = front;
 	while(tmp != 0){
-		if(tmp->kEv->mOwner == mPCB){			//Trazim da li je mPCB vlasnik nekog kEventa, i ako jeste, ne mzoe da uradi
-			tmp->kEv->value = 1;				//	kEv->signal jer bi reschedulovalo tu nit koja je blokirana.
+		if(tmp->kEv->mOwner == mPCB){			
+			tmp->kEv->value = 1;	
 			return;
 		}
 		tmp = tmp->next;
 	}
 
-	tmp = 0;*/
+	tmp = 0;
 }
 
 
