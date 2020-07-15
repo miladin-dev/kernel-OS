@@ -66,14 +66,13 @@ void System::initializeSignals(){
 }
 
 void System::putPCB(PCB* mPCB){
-														// If thread status isn't
-		if(mPCB->threadState(PCB::Blocked)) return;		// New, Ready or
+								// If thread status isn't
+		if(mPCB->threadState(PCB::Blocked)) return;	// New, Ready or
 		if(mPCB->threadState(PCB::Finished)) return;	// Running
-														// don't put it in SCHEDULER.
+								// don't put it in SCHEDULER.
 
 		if(mPCB->getId() == idleThread->getId()) return;
 
-		//syncPrintf("Stavljena u scheduler nit %d sa statusom: %d\n", mPCB->getId(), mPCB->myStatus);
 		Scheduler::put(mPCB);
 }
 
@@ -102,7 +101,6 @@ void System::initializeInterrupts() {
 
 int saveLock = 0;
 void System::dispatch() {
-	//printf("Dispatch niti %d sa statusom %d \n", System::runningPCB->getId(), System::runningPCB->myStatus);
 
 	if(Preemptive::lockNested > 0){
 		saveLock = Preemptive::lockNested;
@@ -126,7 +124,7 @@ void interrupt System::timer(...) {
 		if((runningPCB->timeLeft == 0) || dispatchCalled == 1) {
 			if(Preemptive::lockNested == 0){
 					dispatchCalled = 0;
-					//printf("PROMENA KONTEKSTA");
+					
 				#ifndef BCC_BLOCK_IGNORE
 					asm mov savedSP, sp
 					asm	mov savedSS, ss
@@ -145,24 +143,17 @@ void interrupt System::timer(...) {
 
 					saveLock = 0;
 
-					//printf("=== PROMENA KONTEKSTA ===: \n");
-					//printf("runningPCB: %d status %d \n", runningPCB->getId(), runningPCB->myStatus);
-					//printf("timeslice = %d", currentTimeSlice);
-
 					System::putPCB((PCB*)runningPCB);
 
 
 
 					System::getRunningPCB();
-
-					//printf("Uzeta runningPCB: %d \n", Thread::getRunningId());
-					//printf("=== ZAVRSENA PROMENA KONTEKSTA ===\n");
-
-						savedSS = runningPCB->stackSegment;
-						savedSP = runningPCB->stackPointer;
-						savedBP = runningPCB->basePointer;
-						Preemptive::lockNested = runningPCB->myLockNested;
-						runningPCB->timeLeft = runningPCB->myTime;
+				
+					savedSS = runningPCB->stackSegment;
+					savedSP = runningPCB->stackPointer;
+					savedBP = runningPCB->basePointer;
+					Preemptive::lockNested = runningPCB->myLockNested;
+					runningPCB->timeLeft = runningPCB->myTime;
 
 					#ifndef BCC_BLOCK_IGNORE
 							asm mov ss, savedSS
@@ -171,7 +162,7 @@ void interrupt System::timer(...) {
 					#endif
 
 
-							((PCB*)runningPCB)->callDelayedSignals();
+					((PCB*)runningPCB)->callDelayedSignals();
 
 			} else dispatchCalled = 1;
 		}
