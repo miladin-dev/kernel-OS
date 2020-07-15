@@ -1,4 +1,7 @@
-# kernelOS
-Implementation of multi-threaded kernel on Intel 8086 computer architecture with time-sharing on single CPU.
-Includes context switching, preemption, semaphores, events and signals.
-Written in Borland C++ and 8086 Assembly
+### kernelOS
+- Project for course 'Operating Systems 1'
+- Implementation of multi-threaded kernel with time-sharing on single, Intel 8086 processor, emulating MS DOS
+- Written in Borland C++
+###
+### Includes:
+- context switching, preemption, semaphores, events and signals
